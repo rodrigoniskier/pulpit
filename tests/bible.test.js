@@ -7,4 +7,5 @@ test('parseReference parses cross chapter range',()=>assert.deepEqual(parseRefer
 test('getPassage resolves accent-insensitive book',()=>{const t={books:{'João':{'1':['a','b','c']}}};assert.equal(getPassage(t,'Joao 1:2')[0].text,'b')});
 test('toUsfmReference maps Portuguese NVI references',()=>assert.equal(toUsfmReference('João 3:16-21'),'JHN.3.16-21'));
 test('toUsfmReference maps cross-chapter ranges',()=>assert.equal(toUsfmReference('Romanos 8:38-9:2'),'ROM.8.38-9.2'));
-test('YouVersion NVI link uses licensed version id',()=>{assert.equal(YOUVERSION_NVI_ID,129);assert.equal(buildYouVersionUrl('João 3:16'),'https://www.bible.com/pt/bible/129/JHN.3.16-16.NVI')});
+test('toUsfmReference distinguishes Job from John',()=>assert.equal(toUsfmReference('Jó 1:1'),'JOB.1.1'));
+test('YouVersion NVI link uses licensed version id',()=>{assert.equal(YOUVERSION_NVI_ID,129);assert.equal(buildYouVersionUrl('João 3:16'),'https://www.bible.com/pt/bible/129/JHN.3.16.NVI')});
