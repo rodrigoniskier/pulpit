@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   bootstrap:
+    if: "${{ github.actor != 'github-actions[bot]' }}"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -29,21 +30,19 @@ jobs:
           tar -tf /tmp/pulpit-ultimate.tar > /tmp/archive-files.txt
           tar -xf /tmp/pulpit-ultimate.tar
           rm -rf .bootstrap
-          rm -f .github/workflows/bootstrap.yml
           test -s index.html
           test -s src/app.js
           test -s LICENSE
-          test -s .github/workflows/ci.yml
       - name: Verify project
         shell: bash
         run: |
           npm test
           npm run check
-      - name: Commit Ultimate upgrade
+      - name: Commit code without workflow files
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
+          git add -A -- . ':!.github/workflows/**'
           git commit -m "feat: Pulpit Ultimate 2.0"
           git push origin HEAD:upgrade/ultimate
