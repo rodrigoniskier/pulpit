@@ -26,7 +26,7 @@ export function slugify(value){
 }
 
 export function escapeHtml(value){
-  return normalizeString(value).replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]));
+  return normalizeString(value).replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 }
 
 export function formatDate(value, fallback='Sem data'){
