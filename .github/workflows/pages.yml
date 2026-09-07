@@ -30,6 +30,8 @@ jobs:
           cp index.html styles.css manifest.webmanifest sw.js _site/
           cp -R src assets docs _site/
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
