@@ -1,0 +1,45 @@
+name: Bootstrap Pulpit Ultimate
+
+on:
+  push:
+    branches:
+      - upgrade/ultimate
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    if: ${{ !contains(github.event.head_commit.message, 'feat: Pulpit Ultimate 2.0') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: upgrade/ultimate
+          fetch-depth: 0
+      - name: Rebuild verified project
+        shell: bash
+        run: |
+          cat .bootstrap/part-* > /tmp/pulpit-ultimate.b64
+          base64 -d /tmp/pulpit-ultimate.b64 > /tmp/pulpit-ultimate.tgz
+          tar -tzf /tmp/pulpit-ultimate.tgz > /tmp/archive-files.txt
+          tar -xzf /tmp/pulpit-ultimate.tgz
+          rm -rf .bootstrap
+          rm -f .github/workflows/bootstrap.yml
+          test -f index.html
+          test -f src/app.js
+          test -f LICENSE
+          test -f .github/workflows/ci.yml
+      - name: Verify project
+        shell: bash
+        run: |
+          npm test
+          npm run check
+      - name: Commit Ultimate upgrade
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "feat: Pulpit Ultimate 2.0"
+          git push origin HEAD:upgrade/ultimate
