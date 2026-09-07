@@ -20,16 +20,23 @@ export async function exportEncrypted(password){
 }
 export async function readBackupFile(file,passwordProvider){
   if(file.size>30_000_000) throw new Error('Backup muito grande.');
-  const raw=JSON.parse(await file.text()); let data=raw;
+  let raw;
+  try{ raw=JSON.parse(await file.text()); }catch{ throw new Error('O arquivo não contém um backup JSON válido.'); }
+  let data=raw;
   if(raw.format==='pulpit-encrypted'){
+    if(raw.version!==1||raw.kdf!=='PBKDF2-SHA256'||raw.cipher!=='AES-256-GCM') throw new Error('Formato de backup criptografado não suportado.');
+    if(typeof raw.salt!=='string'||typeof raw.iv!=='string'||typeof raw.data!=='string') throw new Error('Backup criptografado inválido.');
     const password=await passwordProvider(); if(!password) throw new Error('Importação cancelada.');
-    const key=await keyFromPassword(password,b64ToBytes(raw.salt));
-    try{ const clear=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64ToBytes(raw.iv)},key,b64ToBytes(raw.data)); data=JSON.parse(dec.decode(clear)); }
-    catch{ throw new Error('Senha incorreta ou backup corrompido.'); }
+    try{
+      const salt=b64ToBytes(raw.salt), iv=b64ToBytes(raw.iv), cipher=b64ToBytes(raw.data);
+      if(salt.length!==16||iv.length!==12||!cipher.length) throw new Error('Envelope inválido.');
+      const key=await keyFromPassword(password,salt);
+      const clear=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher);
+      data=JSON.parse(dec.decode(clear));
+    }catch{ throw new Error('Senha incorreta ou backup corrompido.'); }
   }
   return validateBackup(data);
 }
 export async function restoreBackup(validated){
-  for(const store of ['sermons','studies','devotionals','translations']){ await db.clear(store); await db.bulkPut(store,validated.collections[store]||[]); }
-  await db.clear('settings'); for(const [key,value] of Object.entries(validated.settings||{})) await db.put('settings',{key,value});
+  await db.restoreUserData(validated.collections,validated.settings||{});
 }
