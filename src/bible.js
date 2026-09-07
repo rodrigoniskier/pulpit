@@ -3,7 +3,7 @@ import {db} from './db.js';
 
 export const YOUVERSION_NVI_ID=129;
 const YOUVERSION_PROXY='./__youversion';
-const aliases={jo:'João',joao:'João',john:'João',sl:'Salmos',salmo:'Salmos',salmos:'Salmos',rm:'Romanos',rom:'Romanos',gn:'Gênesis',gen:'Gênesis',mt:'Mateus',mc:'Marcos',lc:'Lucas',atos:'Atos',at:'Atos',ef:'Efésios',fp:'Filipenses',cl:'Colossenses',hb:'Hebreus',tg:'Tiago',ap:'Apocalipse'};
+const aliases={joao:'João',john:'João',sl:'Salmos',salmo:'Salmos',salmos:'Salmos',rm:'Romanos',rom:'Romanos',gn:'Gênesis',gen:'Gênesis',mt:'Mateus',mc:'Marcos',lc:'Lucas',atos:'Atos',at:'Atos',ef:'Efésios',fp:'Filipenses',cl:'Colossenses',hb:'Hebreus',tg:'Tiago',ap:'Apocalipse'};
 const fold=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim().replace(/\s+/g,' ');
 
 const bookCodes=new Map([
@@ -30,7 +30,8 @@ export function toUsfmReference(reference){
   let usfm=`${code}.${ref.chapter}`;
   if(ref.verseStart){
     usfm+=`.${ref.verseStart}`;
-    if(ref.verseEnd){ usfm+=ref.endChapter!==ref.chapter?`-${ref.endChapter}.${ref.verseEnd}`:`-${ref.verseEnd}`; }
+    const isRange=ref.verseEnd&&(ref.endChapter!==ref.chapter||ref.verseEnd!==ref.verseStart);
+    if(isRange) usfm+=ref.endChapter!==ref.chapter?`-${ref.endChapter}.${ref.verseEnd}`:`-${ref.verseEnd}`;
   }
   return usfm;
 }
