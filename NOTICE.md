@@ -1,7 +1,11 @@
 # Notices and attribution
 
-Pulpit Ultimate is a substantially revised and expanded work inspired by the GPLv3 project
+Pulpit Ultimate is a substantially revised and expanded work based on the GPLv3 project
 [`genilsonf/pulpit`](https://github.com/genilsonf/pulpit).
+
+**Development credits:** Genilson Felinto and Rodrigo Niskier.
+
+Genilson Felinto is the author/developer of the original Pulpit project and its original pastoral workflows, including the passage selector and sermon-preparation study concepts that were restored and expanded in Pulpit Ultimate. Rodrigo Niskier contributed to the subsequent redesign, requirements, product direction and expanded Ultimate implementation.
 
 This version was redesigned for security, offline operation, maintainability, portability,
 accessibility and reliable local data ownership. It is distributed under GNU GPLv3.

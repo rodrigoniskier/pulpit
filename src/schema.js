@@ -3,12 +3,14 @@ import {uid,nowISO,todayISO,normalizeString,normalizeTags} from './utils.js';
 const stringFields={
   sermons:['title','passage','status','preachingDate','theme','location','thesis','objective','fallenCondition','christCenter','introduction','context','conclusion','notes','fileName','createdAt','updatedAt'],
   studies:['title','passage','observation','interpretation','theology','christConnection','application','notes','fileName','createdAt','updatedAt'],
+  preparations:['title','passage','genre','structure','keywords','relatedTerms','crossReferences','doctrines','summary','insights','fallenCondition','relevance','centralIdea','thesis','basicPurpose','specificPurposes','theme','christConnection','characters','setting','plotConflict','turningPoint','gospelContext','christologicalFocus','churchContext','epistlePurpose','occasion','argumentFlow','poeticStructure','imagery','parallelism','emotion','wisdomQuestion','wisdomPrinciple','contrasts','practicalWisdom','propheticContext','covenantIssue','oracleStructure','fulfillment','symbols','visions','historicalContext','hopeMessage','fileName','createdAt','updatedAt'],
   devotionals:['passage','date','lesson','application','prayer','fileName','createdAt','updatedAt']
 };
 
 export function newSermon(){ const id=uid('sermon'); return {id,title:'Novo sermão',passage:'',status:'Rascunho',preachingDate:'',theme:'',location:'',tags:[],thesis:'',objective:'',fallenCondition:'',christCenter:'',introduction:'',context:'',points:[newPoint(1)],conclusion:'',notes:'',fileName:`${id}.md`,createdAt:nowISO(),updatedAt:nowISO()}; }
 export function newPoint(order=1){ return {id:uid('point'),order,title:`Ponto ${order}`,explanation:'',illustration:'',application:'',references:''}; }
 export function newStudy(){ const id=uid('study'); return {id,title:'Novo estudo',passage:'',tags:[],observation:'',interpretation:'',theology:'',christConnection:'',application:'',notes:'',fileName:`${id}.md`,createdAt:nowISO(),updatedAt:nowISO()}; }
+export function newPreparation(){ const id=uid('preparation'); return {id,title:'Novo estudo preparatório',passage:'',genre:'',tags:[],structure:'',keywords:'',relatedTerms:'',crossReferences:'',doctrines:'',summary:'',insights:'',fallenCondition:'',relevance:'',centralIdea:'',thesis:'',basicPurpose:'',specificPurposes:'',theme:'',christConnection:'',characters:'',setting:'',plotConflict:'',turningPoint:'',gospelContext:'',christologicalFocus:'',churchContext:'',epistlePurpose:'',occasion:'',argumentFlow:'',poeticStructure:'',imagery:'',parallelism:'',emotion:'',wisdomQuestion:'',wisdomPrinciple:'',contrasts:'',practicalWisdom:'',propheticContext:'',covenantIssue:'',oracleStructure:'',fulfillment:'',symbols:'',visions:'',historicalContext:'',hopeMessage:'',fileName:`${id}.md`,createdAt:nowISO(),updatedAt:nowISO()}; }
 export function newDevotional(){ const id=uid('devotional'); return {id,passage:'',date:todayISO(),tags:[],lesson:'',application:'',prayer:'',fileName:`${id}.md`,createdAt:nowISO(),updatedAt:nowISO()}; }
 
 export function sanitizeEntity(type,input){
@@ -21,6 +23,10 @@ export function sanitizeEntity(type,input){
     out.points=Array.isArray(input.points)?input.points.slice(0,20).map((p,i)=>({id:normalizeString(p?.id,120)||uid('point'),order:i+1,title:normalizeString(p?.title,500),explanation:normalizeString(p?.explanation,50000),illustration:normalizeString(p?.illustration,50000),application:normalizeString(p?.application,50000),references:normalizeString(p?.references,5000)})):[];
     if(!out.points.length) out.points=[newPoint(1)];
   }
+  if(type==='preparations'){
+    out.genre=['Narrativo','Evangelho','Epistolar','Poético','Sabedoria','Profético','Apocalíptico'].includes(out.genre)?out.genre:'';
+    out.basicPurpose=['Evangelístico','Devocional','Missionário','Pastoral','Ético','Doutrinário'].includes(out.basicPurpose)?out.basicPurpose:'';
+  }
   return out;
 }
 
@@ -28,10 +34,12 @@ export function validateBackup(data){
   if(!data||typeof data!=='object') throw new Error('Backup inválido.');
   if(data.format!=='pulpit-backup') throw new Error('Formato de backup não reconhecido.');
   const collections={};
-  for(const type of ['sermons','studies','devotionals']){
-    if(!Array.isArray(data.data?.[type])) throw new Error(`Coleção ausente: ${type}.`);
-    if(data.data[type].length>10000) throw new Error(`Backup excede o limite em ${type}.`);
-    collections[type]=data.data[type].map(v=>sanitizeEntity(type,v));
+  for(const type of ['sermons','studies','preparations','devotionals']){
+    const raw=data.data?.[type];
+    if(type==='preparations'&&!Array.isArray(raw)){ collections[type]=[]; continue; }
+    if(!Array.isArray(raw)) throw new Error(`Coleção ausente: ${type}.`);
+    if(raw.length>10000) throw new Error(`Backup excede o limite em ${type}.`);
+    collections[type]=raw.map(v=>sanitizeEntity(type,v));
   }
   collections.translations=Array.isArray(data.data?.translations)?data.data.translations.slice(0,20).map(sanitizeTranslation):[];
   const settings=data.data?.settings&&typeof data.data.settings==='object'?data.data.settings:{};

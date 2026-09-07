@@ -17,26 +17,26 @@
     <aside class="sidebar" aria-label="Navegação principal">
       <div class="brand">
         <img src="assets/icon-192.png" alt="" width="44" height="44">
-        <div>
-          <strong>Pulpit</strong>
-          <span>Ultimate 2.0</span>
-        </div>
+        <div class="brand-copy"><strong>Pulpit</strong><span>Ultimate 2.2</span></div>
+        <button id="sidebar-collapse" class="sidebar-collapse" aria-label="Recolher barra lateral" title="Recolher/expandir barra lateral">‹</button>
       </div>
       <nav id="nav">
-        <button data-view="dashboard" class="nav-item is-active">⌂ Dashboard</button>
-        <button data-view="sermons" class="nav-item">✦ Sermões</button>
-        <button data-view="studies" class="nav-item">⌕ Estudos</button>
-        <button data-view="devotionals" class="nav-item">♡ Devocionais</button>
-        <button data-view="agenda" class="nav-item">▦ Agenda</button>
-        <button data-view="bible" class="nav-item">☰ Bíblia</button>
-        <button data-view="data" class="nav-item">⇅ Backup & Dados</button>
-        <button data-view="settings" class="nav-item">⚙ Configurações</button>
+        <button data-view="dashboard" class="nav-item is-active"><span class="nav-icon">⌂</span><span class="nav-label">Dashboard</span></button>
+        <button data-view="sermons" class="nav-item"><span class="nav-icon">✦</span><span class="nav-label">Sermões</span></button>
+        <button data-view="preparations" class="nav-item"><span class="nav-icon">⌕</span><span class="nav-label">Preparação do texto</span></button>
+        <button data-view="studies" class="nav-item"><span class="nav-icon">☷</span><span class="nav-label">Estudos para grupos</span></button>
+        <button data-view="devotionals" class="nav-item"><span class="nav-icon">♡</span><span class="nav-label">Devocionais</span></button>
+        <button data-view="agenda" class="nav-item"><span class="nav-icon">▦</span><span class="nav-label">Agenda</span></button>
+        <button data-view="bible" class="nav-item"><span class="nav-icon">☰</span><span class="nav-label">Bíblia</span></button>
+        <button data-view="data" class="nav-item"><span class="nav-icon">⇅</span><span class="nav-label">Backup & Dados</span></button>
+        <button data-view="settings" class="nav-item"><span class="nav-icon">⚙</span><span class="nav-label">Configurações</span></button>
       </nav>
       <div class="sidebar-footer">
         <span id="connection-status" class="status-pill" aria-live="polite">offline-ready</span>
         <button id="install-btn" class="secondary hidden">Instalar app</button>
       </div>
     </aside>
+    <button id="sidebar-backdrop" class="sidebar-backdrop" aria-label="Fechar menu"></button>
 
     <div class="workspace">
       <header class="topbar">
@@ -54,9 +54,7 @@
 
       <main id="main" tabindex="-1">
         <section id="view-dashboard" class="view is-visible" aria-labelledby="dashboard-title">
-          <div class="view-header">
-            <div><p class="eyebrow">Visão geral</p><h1 id="dashboard-title">Dashboard pastoral</h1></div>
-          </div>
+          <div class="view-header"><div><p class="eyebrow">Visão geral</p><h1 id="dashboard-title">Dashboard pastoral</h1></div></div>
           <div id="stats-grid" class="stats-grid"></div>
           <div class="two-col">
             <article class="panel"><div class="panel-header"><h2>Próximas pregações</h2></div><div id="upcoming-list"></div></article>
@@ -65,10 +63,7 @@
         </section>
 
         <section id="view-sermons" class="view" aria-labelledby="sermons-title">
-          <div class="view-header">
-            <div><p class="eyebrow">Biblioteca</p><h1 id="sermons-title">Sermões</h1></div>
-            <button id="new-sermon" class="primary">+ Novo sermão</button>
-          </div>
+          <div class="view-header"><div><p class="eyebrow">Biblioteca</p><h1 id="sermons-title">Sermões</h1></div><button id="new-sermon" class="primary">+ Novo sermão</button></div>
           <div class="filter-row">
             <input id="sermon-filter" type="search" placeholder="Filtrar sermões…">
             <select id="sermon-status-filter" aria-label="Filtrar por status"><option value="">Todos os status</option><option>Rascunho</option><option>Em preparação</option><option>Pronto</option><option>Pregado</option></select>
@@ -82,15 +77,27 @@
             <div class="toolbar-actions">
               <button id="sermon-history" class="secondary">Histórico</button>
               <button id="sermon-markdown" class="secondary">Markdown</button>
+              <label class="inline-control">PDF <select id="sermon-print-size" aria-label="Tamanho da fonte no PDF"><option value="18">18 pt</option><option value="20">20 pt</option><option value="22" selected>22 pt</option><option value="24">24 pt</option><option value="28">28 pt</option></select></label>
               <button id="sermon-print" class="secondary">Imprimir / PDF</button>
+              <button id="sermon-present" class="primary">Apresentar sermão</button>
               <button id="sermon-ai-prompt" class="secondary">Copiar prompt IA</button>
               <button id="sermon-delete" class="danger">Excluir</button>
+            </div>
+          </div>
+          <div id="sermon-mark-toolbar" class="mark-toolbar panel" aria-label="Marcações de cor">
+            <span><strong>Realçar seleção:</strong> selecione um trecho em qualquer campo abaixo e escolha uma cor.</span>
+            <div class="toolbar-actions">
+              <button type="button" class="mark-button mark-yellow" data-mark="yellow">Amarelo</button>
+              <button type="button" class="mark-button mark-blue" data-mark="blue">Azul</button>
+              <button type="button" class="mark-button mark-green" data-mark="green">Verde</button>
+              <button type="button" class="mark-button mark-pink" data-mark="pink">Rosa</button>
+              <button type="button" class="secondary" data-mark="clear">Sem marca</button>
             </div>
           </div>
           <form id="sermon-form" class="editor-form" autocomplete="off">
             <div class="title-field"><label for="sermon-title">Título</label><input id="sermon-title" name="title" required maxlength="180" placeholder="Título do sermão"></div>
             <div class="form-grid cols-3">
-              <label>Texto bíblico<input name="passage" maxlength="160" placeholder="Ex.: Romanos 8:1-17"></label>
+              <label>Texto bíblico<div class="passage-field"><input id="sermon-passage" class="passage-picker" name="passage" maxlength="160" placeholder="Clique para selecionar" readonly><button type="button" class="secondary passage-button" data-passage-target="#sermon-passage">Selecionar</button></div></label>
               <label>Status<select name="status"><option>Rascunho</option><option>Em preparação</option><option>Pronto</option><option>Pregado</option></select></label>
               <label>Data da pregação<input name="preachingDate" type="date"></label>
               <label>Tema<input name="theme" maxlength="180"></label>
@@ -112,8 +119,104 @@
           </form>
         </section>
 
+        <section id="view-preparations" class="view" aria-labelledby="preparations-title">
+          <div class="view-header">
+            <div><p class="eyebrow">Exegese e preparação</p><h1 id="preparations-title">Preparação do texto</h1><p class="view-description">Contato prévio e detalhado com a passagem antes de construir o sermão.</p></div>
+            <button id="new-preparation" class="primary">+ Nova preparação</button>
+          </div>
+          <div class="filter-row"><input id="preparation-filter" type="search" placeholder="Filtrar por passagem, gênero, tema…"></div>
+          <div id="preparation-list" class="card-list"></div>
+        </section>
+
+        <section id="view-preparation-editor" class="view" aria-labelledby="preparation-editor-title">
+          <div class="editor-toolbar">
+            <button id="preparation-back" class="secondary">← Preparações</button>
+            <div class="toolbar-actions">
+              <span id="prep-save-status" class="save-status">Tudo salvo</span>
+              <button id="preparation-to-sermon" class="primary" type="button">Gerar sermão deste estudo</button>
+              <button id="preparation-delete" class="danger" type="button">Excluir</button>
+            </div>
+          </div>
+          <form id="preparation-form" class="editor-form" autocomplete="off">
+            <div class="title-field"><label id="preparation-editor-title">Nome da preparação<input name="title" maxlength="180" placeholder="Ex.: Romanos 8 — vida no Espírito"></label></div>
+            <div class="form-grid cols-3">
+              <label>Passagem<div class="passage-field"><input id="preparation-passage" class="passage-picker" name="passage" readonly placeholder="Clique para selecionar"><button type="button" class="secondary passage-button" data-passage-target="#preparation-passage">Selecionar</button></div></label>
+              <label>Gênero literário<select name="genre"><option value="">Selecione…</option><option>Narrativo</option><option>Evangelho</option><option>Epistolar</option><option>Poético</option><option>Sabedoria</option><option>Profético</option><option>Apocalíptico</option></select></label>
+              <label>Tags<input name="tags" maxlength="300" placeholder="romanos, espírito, santificação"></label>
+            </div>
+
+            <article class="study-stage">
+              <div class="stage-number">1</div><div><h2>Olhe atentamente para o texto</h2><p>Registre a estrutura e os elementos que ajudam a enxergar o que está realmente na passagem.</p></div>
+            </article>
+            <label>Diagramação / estrutura da passagem<textarea name="structure" rows="7" placeholder="Divisão dos versículos, progressão do argumento, cenas ou movimentos do texto…"></textarea></label>
+            <div class="form-grid cols-2">
+              <label>Palavras-chave<textarea name="keywords" rows="5" placeholder="Termos repetidos ou centrais…"></textarea></label>
+              <label>Termos relacionados<textarea name="relatedTerms" rows="5" placeholder="Significados, relações semânticas, termos no original…"></textarea></label>
+            </div>
+
+            <div class="genre-fields hidden" data-genre="Narrativo|Evangelho">
+              <h2>Personagens e cenário</h2>
+              <div class="form-grid cols-2"><label>Personagens<textarea name="characters"></textarea></label><label>Cenário<textarea name="setting"></textarea></label></div>
+            </div>
+            <div class="genre-fields hidden" data-genre="Narrativo">
+              <h2>Campos próprios do gênero narrativo</h2>
+              <div class="form-grid cols-2"><label>Conflito e desenvolvimento<textarea name="plotConflict"></textarea></label><label>Ponto de virada / resolução<textarea name="turningPoint"></textarea></label></div>
+            </div>
+            <div class="genre-fields hidden" data-genre="Evangelho">
+              <h2>Campos próprios dos Evangelhos</h2>
+              <div class="form-grid cols-2"><label>Contexto dentro do Evangelho<textarea name="gospelContext"></textarea></label><label>Ênfase cristológica<textarea name="christologicalFocus"></textarea></label></div>
+            </div>
+            <div class="genre-fields hidden" data-genre="Epistolar">
+              <h2>Campos próprios das epístolas</h2>
+              <div class="form-grid cols-2"><label>Contexto da igreja / destinatários<textarea name="churchContext"></textarea></label><label>Propósito da epístola<textarea name="epistlePurpose"></textarea></label><label>Ocasião ou problema que motivou a carta<textarea name="occasion"></textarea></label><label>Fluxo do argumento<textarea name="argumentFlow"></textarea></label></div>
+            </div>
+            <div class="genre-fields hidden" data-genre="Poético">
+              <h2>Campos próprios da poesia bíblica</h2>
+              <div class="form-grid cols-2"><label>Estrutura poética<textarea name="poeticStructure"></textarea></label><label>Imagens e figuras<textarea name="imagery"></textarea></label><label>Paralelismos<textarea name="parallelism"></textarea></label><label>Movimento emocional<textarea name="emotion"></textarea></label></div>
+            </div>
+            <div class="genre-fields hidden" data-genre="Sabedoria">
+              <h2>Campos próprios da literatura de sabedoria</h2>
+              <div class="form-grid cols-2"><label>Questão de sabedoria<textarea name="wisdomQuestion"></textarea></label><label>Princípio de sabedoria<textarea name="wisdomPrinciple"></textarea></label><label>Contrastes<textarea name="contrasts"></textarea></label><label>Sabedoria prática<textarea name="practicalWisdom"></textarea></label></div>
+            </div>
+            <div class="genre-fields hidden" data-genre="Profético">
+              <h2>Campos próprios da literatura profética</h2>
+              <div class="form-grid cols-2"><label>Contexto profético<textarea name="propheticContext"></textarea></label><label>Questão de aliança<textarea name="covenantIssue"></textarea></label><label>Estrutura do oráculo<textarea name="oracleStructure"></textarea></label><label>Cumprimento / horizonte profético<textarea name="fulfillment"></textarea></label></div>
+            </div>
+            <div class="genre-fields hidden" data-genre="Apocalíptico">
+              <h2>Campos próprios da literatura apocalíptica</h2>
+              <div class="form-grid cols-2"><label>Símbolos<textarea name="symbols"></textarea></label><label>Visões<textarea name="visions"></textarea></label><label>Contexto histórico<textarea name="historicalContext"></textarea></label><label>Mensagem de esperança<textarea name="hopeMessage"></textarea></label></div>
+            </div>
+
+            <article class="study-stage">
+              <div class="stage-number">2</div><div><h2>Conecte e compreenda</h2><p>Relacione a passagem com o restante das Escrituras e com as doutrinas que ela expressa.</p></div>
+            </article>
+            <div class="form-grid cols-2">
+              <label>Passagens relacionadas / referências cruzadas<textarea name="crossReferences" rows="6"></textarea></label>
+              <label>Doutrinas relacionadas<textarea name="doctrines" rows="6"></textarea></label>
+            </div>
+            <label>Conexão com Cristo / história da redenção<textarea name="christConnection" rows="6"></textarea></label>
+            <label>Resumo da passagem<textarea name="summary" rows="6" placeholder="Resuma em poucas frases o que o texto diz."></textarea></label>
+            <label>Insights e dúvidas<textarea name="insights" rows="6" placeholder="Perguntas para pesquisar, observações, tensões e descobertas."></textarea></label>
+
+            <article class="study-stage">
+              <div class="stage-number">3</div><div><h2>Chegue à mensagem do texto</h2><p>Da compreensão do texto à sua relevância e à formulação que sustentará o sermão.</p></div>
+            </article>
+            <div class="form-grid cols-2">
+              <label>Foco da Condição Decaída (FCD)<textarea name="fallenCondition" rows="5" placeholder="Qual problema humano ou condição caída o texto confronta?"></textarea></label>
+              <label>Relevância da passagem<textarea name="relevance" rows="5" placeholder="Por que esta passagem importa para os ouvintes de hoje?"></textarea></label>
+              <label>ICT — Ideia Central do Texto<textarea name="centralIdea" rows="4" placeholder="O que o autor bíblico comunicou aos leitores originais?"></textarea></label>
+              <label>Tese / tema principal<textarea name="thesis" rows="4"></textarea></label>
+            </div>
+            <div class="form-grid cols-2">
+              <label>Propósito básico<select name="basicPurpose"><option value="">Selecione…</option><option>Evangelístico</option><option>Devocional</option><option>Missionário</option><option>Pastoral</option><option>Ético</option><option>Doutrinário</option></select></label>
+              <label>Propósitos específicos<textarea name="specificPurposes" rows="5" placeholder="O que se espera que os ouvintes compreendam, sintam ou façam?"></textarea></label>
+            </div>
+            <label>Tema da mensagem<input name="theme" maxlength="180" placeholder="Título ou tema prático decorrente do estudo"></label>
+          </form>
+        </section>
+
         <section id="view-studies" class="view" aria-labelledby="studies-title">
-          <div class="view-header"><div><p class="eyebrow">Pesquisa</p><h1 id="studies-title">Estudos bíblicos</h1></div><button id="new-study" class="primary">+ Novo estudo</button></div>
+          <div class="view-header"><div><p class="eyebrow">Ensino e pequenos grupos</p><h1 id="studies-title">Estudos para ensino/grupos</h1><p class="view-description">Materiais destinados a uma aula, célula, EBD ou outro encontro de estudo bíblico.</p></div><button id="new-study" class="primary">+ Novo estudo</button></div>
           <div class="filter-row"><input id="study-filter" type="search" placeholder="Filtrar estudos…"></div>
           <div id="study-list" class="card-list"></div>
         </section>
@@ -121,8 +224,8 @@
         <section id="view-study-editor" class="view" aria-labelledby="study-editor-title">
           <div class="editor-toolbar"><button data-back="studies" class="secondary">← Estudos</button><div class="toolbar-actions"><button id="study-history" class="secondary">Histórico</button><button id="study-markdown" class="secondary">Markdown</button><button id="study-to-sermon" class="primary">Transformar em sermão</button><button id="study-delete" class="danger">Excluir</button></div></div>
           <form id="study-form" class="editor-form" autocomplete="off">
-            <div class="title-field"><label>Título<input name="title" required maxlength="180"></label></div>
-            <div class="form-grid cols-2"><label>Passagem<input name="passage" maxlength="160"></label><label>Tags<input name="tags" maxlength="300"></label></div>
+            <div class="title-field"><label id="study-editor-title">Título<input name="title" required maxlength="180"></label></div>
+            <div class="form-grid cols-2"><label>Passagem<div class="passage-field"><input id="study-passage" class="passage-picker" name="passage" maxlength="160" readonly><button type="button" class="secondary passage-button" data-passage-target="#study-passage">Selecionar</button></div></label><label>Tags<input name="tags" maxlength="300"></label></div>
             <label>Observação<textarea name="observation" rows="8"></textarea></label>
             <label>Interpretação<textarea name="interpretation" rows="8"></textarea></label>
             <label>Teologia e conexões canônicas<textarea name="theology" rows="8"></textarea></label>
@@ -140,7 +243,7 @@
         <section id="view-devotional-editor" class="view" aria-labelledby="devotional-editor-title">
           <div class="editor-toolbar"><button data-back="devotionals" class="secondary">← Devocionais</button><div class="toolbar-actions"><button id="devotional-history" class="secondary">Histórico</button><button id="devotional-markdown" class="secondary">Markdown</button><button id="devotional-delete" class="danger">Excluir</button></div></div>
           <form id="devotional-form" class="editor-form" autocomplete="off">
-            <div class="form-grid cols-3"><label>Passagem<input name="passage" maxlength="160"></label><label>Data<input name="date" type="date"></label><label>Tags<input name="tags" maxlength="300"></label></div>
+            <div class="form-grid cols-3"><label>Passagem<div class="passage-field"><input id="devotional-passage" class="passage-picker" name="passage" maxlength="160" readonly><button type="button" class="secondary passage-button" data-passage-target="#devotional-passage">Selecionar</button></div></label><label>Data<input name="date" type="date"></label><label>Tags<input name="tags" maxlength="300"></label></div>
             <label>Lição do texto<textarea name="lesson" rows="8"></textarea></label>
             <label>Aplicação pessoal<textarea name="application" rows="8"></textarea></label>
             <label>Oração<textarea name="prayer" rows="8"></textarea></label>
@@ -157,7 +260,7 @@
         <section id="view-bible" class="view" aria-labelledby="bible-title">
           <div class="view-header"><div><p class="eyebrow">Texto bíblico</p><h1 id="bible-title">Bíblia</h1></div><label class="file-button secondary">Importar tradução JSON<input id="bible-import" type="file" accept="application/json,.json" hidden></label></div>
           <div class="notice"><strong>Sem tradução embutida.</strong> Importe uma tradução que você tenha direito de usar. O Pulpit armazena o texto apenas no seu navegador.</div>
-          <div class="form-grid cols-2 bible-controls"><label>Tradução<select id="bible-translation"></select></label><label>Referência<input id="bible-reference" placeholder="Ex.: João 3:16-21"></label></div>
+          <div class="form-grid cols-2 bible-controls"><label>Tradução<select id="bible-translation"></select></label><label>Referência<div class="passage-field"><input id="bible-reference" class="passage-picker" placeholder="Clique para selecionar" readonly><button type="button" class="secondary passage-button" data-passage-target="#bible-reference">Selecionar</button></div></label></div>
           <div class="toolbar-actions"><button id="bible-open" class="primary">Abrir texto</button><button id="bible-copy" class="secondary">Copiar</button><button id="bible-delete-translation" class="danger">Remover tradução</button></div>
           <article id="bible-result" class="bible-result" aria-live="polite"></article>
         </section>
@@ -165,7 +268,7 @@
         <section id="view-data" class="view" aria-labelledby="data-title">
           <div class="view-header"><div><p class="eyebrow">Portabilidade</p><h1 id="data-title">Backup & Dados</h1></div></div>
           <div class="data-grid">
-            <article class="panel"><h2>Backup completo</h2><p>Exporte todos os seus sermões, estudos, devocionais e configurações.</p><div class="stack"><button id="export-json" class="primary">Exportar JSON</button><button id="export-encrypted" class="secondary">Exportar backup criptografado</button><label class="file-button secondary">Importar backup<input id="import-backup" type="file" accept="application/json,.json,.pulpit" hidden></label></div></article>
+            <article class="panel"><h2>Backup completo</h2><p>Exporte sermões, preparações de texto, estudos, devocionais e configurações.</p><div class="stack"><button id="export-json" class="primary">Exportar JSON</button><button id="export-encrypted" class="secondary">Exportar backup criptografado</button><label class="file-button secondary">Importar backup<input id="import-backup" type="file" accept="application/json,.json,.pulpit" hidden></label></div></article>
             <article class="panel"><h2>Espelhamento Markdown</h2><p id="mirror-status">Nenhuma pasta vinculada.</p><div class="stack"><button id="choose-mirror" class="primary">Escolher pasta</button><button id="mirror-all" class="secondary">Sincronizar tudo agora</button></div></article>
             <article class="panel"><h2>Integridade</h2><p id="integrity-summary">Verificando…</p><button id="run-integrity" class="secondary">Executar verificação</button></article>
           </div>
@@ -180,7 +283,7 @@
             <label class="checkbox-row"><input name="autoMirror" type="checkbox"> Espelhar automaticamente em Markdown quando houver pasta autorizada</label>
             <button class="primary" type="submit">Salvar preferências</button>
           </form>
-          <article class="legal panel"><h2>Sobre</h2><p>Pulpit Ultimate 2.0 — software livre GPLv3. O conteúdo pastoral permanece local por padrão. Não há garantia; mantenha backups regulares.</p><p><a href="LICENSE">Ver licença</a> · <a href="NOTICE.md">Avisos e atribuição</a></p></article>
+          <article class="legal panel"><h2>Sobre</h2><p>Pulpit Ultimate 2.2 — software livre GPLv3. O conteúdo pastoral permanece local por padrão.</p><p><strong>Desenvolvimento:</strong> Genilson Felinto e Rodrigo Niskier.</p><p><a href="LICENSE">Ver licença</a> · <a href="NOTICE.md">Avisos e atribuição</a></p></article>
         </section>
       </main>
     </div>
@@ -191,7 +294,39 @@
     <div id="modal-body"></div>
   </dialog>
 
+  <dialog id="bible-selector-modal" class="bible-selector-dialog">
+    <div class="dialog-header"><div><p class="eyebrow">Seletor bíblico</p><h2>Escolha a passagem</h2></div><button id="picker-cancel" class="icon-btn" aria-label="Fechar">×</button></div>
+    <div class="picker-body">
+      <label>Livro<select id="picker-book"></select></label>
+      <div class="form-grid cols-2">
+        <label>Capítulo inicial<select id="picker-chapter-start" disabled></select></label>
+        <label>Versículo inicial<select id="picker-verse-start" disabled></select></label>
+        <label>Capítulo final<select id="picker-chapter-end" disabled></select></label>
+        <label>Versículo final<select id="picker-verse-end" disabled></select></label>
+      </div>
+      <div class="picker-preview"><span>Passagem selecionada</span><strong id="picker-preview">—</strong></div>
+      <div class="toolbar-actions"><button id="picker-apply" class="primary" disabled>Usar esta passagem</button><button id="picker-cancel-secondary" type="button" class="secondary">Cancelar</button></div>
+    </div>
+  </dialog>
+
+  <div id="sermon-presentation" class="presentation-overlay hidden" aria-live="polite">
+    <div class="presentation-topbar">
+      <button id="presentation-close" class="presentation-control">Fechar</button>
+      <label>Fonte <input id="presentation-font" type="range" min="28" max="64" value="42"></label>
+      <span id="presentation-counter"></span>
+    </div>
+    <div class="presentation-slide">
+      <h1 id="presentation-title"></h1>
+      <div id="presentation-body"></div>
+    </div>
+    <div class="presentation-nav">
+      <button id="presentation-prev" class="presentation-control">← Anterior</button>
+      <button id="presentation-next" class="presentation-control">Próximo →</button>
+    </div>
+  </div>
+
   <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
   <script type="module" src="src/app.js"></script>
+  <script type="module" src="src/producer-feedback.js"></script>
 </body>
 </html>

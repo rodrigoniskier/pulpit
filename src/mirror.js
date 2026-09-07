@@ -1,7 +1,7 @@
 import {db} from './db.js';
 import {entityToMarkdown} from './markdown.js';
 import {downloadBlob} from './utils.js';
-const dirs={sermons:'Sermoes',studies:'Estudos',devotionals:'Devocionais'};
+const dirs={sermons:'Sermoes',preparations:'Preparacao-do-Texto',studies:'Estudos',devotionals:'Devocionais'};
 async function permission(handle,write=true){ if(!handle) return false; const opts={mode:write?'readwrite':'read'}; if((await handle.queryPermission?.(opts))==='granted') return true; return (await handle.requestPermission?.(opts))==='granted'; }
 export class FileMirror{
   async choose(){ if(!window.showDirectoryPicker) throw new Error('Seu navegador não oferece seleção persistente de pasta.'); const handle=await window.showDirectoryPicker({mode:'readwrite'}); if(!await permission(handle)) throw new Error('Permissão negada.'); await db.put('handles',{key:'mirrorDirectory',value:handle}); return handle; }

@@ -7,9 +7,9 @@ function bytesToB64(bytes){ let s=''; for(const b of bytes) s+=String.fromCharCo
 function b64ToBytes(s){ const raw=atob(s); return Uint8Array.from(raw,c=>c.charCodeAt(0)); }
 async function keyFromPassword(password,salt){ const material=await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveKey']); return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt']); }
 export async function buildBackup(){
-  const [sermons,studies,devotionals,translations,settingsRows]=await Promise.all(['sermons','studies','devotionals','translations','settings'].map(s=>db.getAll(s)));
+  const [sermons,studies,preparations,devotionals,translations,settingsRows]=await Promise.all(['sermons','studies','preparations','devotionals','translations','settings'].map(s=>db.getAll(s)));
   const settings=Object.fromEntries(settingsRows.map(x=>[x.key,x.value]));
-  return {format:'pulpit-backup',version:2,appVersion:APP_VERSION,exportedAt:nowISO(),data:{sermons,studies,devotionals,translations,settings}};
+  return {format:'pulpit-backup',version:3,appVersion:APP_VERSION,exportedAt:nowISO(),data:{sermons,studies,preparations,devotionals,translations,settings}};
 }
 export async function exportJson(){ const data=await buildBackup(); downloadBlob(JSON.stringify(data,null,2),`pulpit-backup-${new Date().toISOString().slice(0,10)}.json`,'application/json'); }
 export async function exportEncrypted(password){

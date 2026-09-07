@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.2.0 — Fluxo de preparação e modo de púlpito
+
+- Restored the original sermon-preparation study workflow as a separate `Preparação do texto` area.
+- Kept the current observation/interpretation/application-based workflow as `Estudos para ensino/grupos`.
+- Added genre-aware preparation fields for narrative, Gospel, epistolary, poetic, wisdom, prophetic and apocalyptic passages.
+- Restored a structured Bible passage selector with book, chapter and verse selection across sermon, study, devotional and Bible fields.
+- Added configurable sermon print/PDF font sizes with 22 pt as the default pulpit-reading option.
+- Added native sermon text highlighting in yellow, blue, green and pink.
+- Added a full-screen sermon presentation/pulpit mode with keyboard navigation and adjustable font size.
+- Added collapsible desktop sidebar and improved mobile navigation drawer.
+- Refined typography, spacing, icons and dark-mode contrast.
+- Added Rodrigo Niskier alongside Genilson Felinto in the visible development credits.
+- Added preparation studies to backups, legacy-compatible restore, Markdown export and folder mirroring.
+- Added schema tests for preparations and backward compatibility with older backups.
+
 ## 2.1.0 — NVI Online licenciada
 
 - Added licensed NVI Online access through YouVersion Platform (Bible version ID 129).
