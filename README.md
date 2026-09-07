@@ -15,18 +15,22 @@ padrão e não há dependências JavaScript externas em runtime.
 - Autosave com histórico de revisões.
 - Busca global e filtros por tags/status.
 - Exportação Markdown e impressão/PDF nativa do navegador.
-- Backup JSON e backup criptografado (`.pulpit`) com AES-GCM.
+- Backup JSON e backup criptografado (`.pulpit`) com PBKDF2-SHA-256 + AES-256-GCM.
+- Restauração de backup em transação atômica para evitar estado parcial em caso de falha.
 - Espelhamento opcional em pasta local usando File System Access API.
 - Importação de traduções bíblicas em JSON, sem redistribuir textos protegidos.
 - Tema claro/escuro/sistema e opções de leitura.
 - Sem CDN e sem backend obrigatório.
+- Testes e verificação sintática automatizados no GitHub Actions.
+- Deploy estático automatizado para GitHub Pages.
 
 ## Privacidade e segurança
 
 Os dados ficam no IndexedDB do navegador. Conteúdo do usuário é renderizado com `textContent` /
-valores de formulário e não é injetado em `innerHTML`. Backups importados passam por validação de
-estrutura e limites de tamanho. Chaves de criptografia são derivadas da senha do usuário e nunca
-são persistidas.
+valores de formulário e não é injetado diretamente em `innerHTML`. Os trechos que precisam gerar
+HTML para impressão escapam os valores fornecidos pelo usuário. Backups importados passam por
+validação de estrutura e limites de tamanho. Chaves de criptografia são derivadas da senha do
+usuário e nunca são persistidas.
 
 > Importante: dados locais podem ser apagados ao limpar dados do navegador. Use o backup e/ou o
 > espelhamento Markdown regularmente.
@@ -58,8 +62,9 @@ Não há dependências npm de runtime.
 
 ## GitHub Pages
 
-O workflow `.github/workflows/pages.yml` é manual (`workflow_dispatch`). Ative GitHub Pages usando
-**GitHub Actions** nas configurações do repositório e execute o workflow `Deploy Pages`.
+O workflow `.github/workflows/pages.yml` publica o site quando há `push` no branch `main` e também
+pode ser executado manualmente por `workflow_dispatch`. Nas configurações do repositório, o GitHub
+Pages deve usar **GitHub Actions** como fonte de publicação.
 
 ## Compatibilidade
 
@@ -67,6 +72,9 @@ O workflow `.github/workflows/pages.yml` é manual (`workflow_dispatch`). Ative 
 - Firefox/Safari: recursos centrais funcionam; File System Access pode não estar disponível e o app
   oferece download Markdown como fallback.
 
-## Licença
+## Origem e licença
+
+Esta versão é uma revisão substancial do projeto GPLv3 `genilsonf/pulpit`. A atribuição e as notas
+sobre as modificações estão em `NOTICE.md`.
 
 GNU GPL v3. Consulte `LICENSE` e `NOTICE.md`.
