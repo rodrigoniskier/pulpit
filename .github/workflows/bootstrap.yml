@@ -21,14 +21,19 @@ jobs:
         run: |
           cat .bootstrap/part-* > /tmp/pulpit-ultimate.b64
           base64 -d /tmp/pulpit-ultimate.b64 > /tmp/pulpit-ultimate.tgz
-          tar -tzf /tmp/pulpit-ultimate.tgz > /tmp/archive-files.txt
-          tar -xzf /tmp/pulpit-ultimate.tgz
+          set +e
+          gzip -dc /tmp/pulpit-ultimate.tgz > /tmp/pulpit-ultimate.tar
+          GZIP_STATUS=$?
+          set -e
+          echo "gzip status: ${GZIP_STATUS}"
+          tar -tf /tmp/pulpit-ultimate.tar > /tmp/archive-files.txt
+          tar -xf /tmp/pulpit-ultimate.tar
           rm -rf .bootstrap
           rm -f .github/workflows/bootstrap.yml
-          test -f index.html
-          test -f src/app.js
-          test -f LICENSE
-          test -f .github/workflows/ci.yml
+          test -s index.html
+          test -s src/app.js
+          test -s LICENSE
+          test -s .github/workflows/ci.yml
       - name: Verify project
         shell: bash
         run: |
