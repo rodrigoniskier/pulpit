@@ -1,0 +1,14 @@
+{
+  "name": "Nome da tradução",
+  "abbreviation": "SIGLA",
+  "language": "pt-BR",
+  "license": "Descreva a licença ou autorização de uso",
+  "books": {
+    "João": {
+      "1": [
+        "Texto do versículo 1",
+        "Texto do versículo 2"
+      ]
+    }
+  }
+}
