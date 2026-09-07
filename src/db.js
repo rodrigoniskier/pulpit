@@ -1,6 +1,6 @@
 const DB_NAME='pulpit-ultimate';
-const DB_VERSION=1;
-const STORES=['sermons','studies','devotionals','translations','revisions','settings','handles'];
+const DB_VERSION=2;
+const STORES=['sermons','studies','devotionals','translations','revisions','settings','handles','secrets'];
 let dbPromise;
 
 function requestToPromise(req){ return new Promise((resolve,reject)=>{ req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error); }); }
@@ -14,7 +14,7 @@ export function openDB(){
       const db=req.result;
       for(const name of STORES){
         if(!db.objectStoreNames.contains(name)){
-          const store=db.createObjectStore(name,{keyPath:name==='settings'||name==='handles'?'key':'id'});
+          const store=db.createObjectStore(name,{keyPath:['settings','handles','secrets'].includes(name)?'key':'id'});
           if(['sermons','studies','devotionals'].includes(name)) store.createIndex('updatedAt','updatedAt');
           if(name==='revisions'){
             store.createIndex('entityKey','entityKey');
