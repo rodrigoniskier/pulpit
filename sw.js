@@ -1,4 +1,4 @@
-const CACHE='pulpit-ultimate-v2.0.2';
+const CACHE='pulpit-ultimate-v2.0.3';
 const APP_SHELL=['./','./index.html','./styles.css','./manifest.webmanifest','./assets/icon-192.png','./assets/icon-512.png','./src/app.js','./src/db.js','./src/schema.js','./src/utils.js','./src/markdown.js','./src/mirror.js','./src/backup.js','./src/bible.js','./src/prompt.js'];
 const YOUVERSION_ORIGIN='https://api.youversion.com';
 
