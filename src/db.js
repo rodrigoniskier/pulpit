@@ -1,6 +1,6 @@
 const DB_NAME='pulpit-ultimate';
-const DB_VERSION=2;
-const STORES=['sermons','studies','devotionals','translations','revisions','settings','handles','secrets'];
+const DB_VERSION=3;
+const STORES=['sermons','studies','preparations','devotionals','translations','revisions','settings','handles','secrets'];
 let dbPromise;
 
 function requestToPromise(req){ return new Promise((resolve,reject)=>{ req.onsuccess=()=>resolve(req.result); req.onerror=()=>reject(req.error); }); }
@@ -15,7 +15,7 @@ export function openDB(){
       for(const name of STORES){
         if(!db.objectStoreNames.contains(name)){
           const store=db.createObjectStore(name,{keyPath:['settings','handles','secrets'].includes(name)?'key':'id'});
-          if(['sermons','studies','devotionals'].includes(name)) store.createIndex('updatedAt','updatedAt');
+          if(['sermons','studies','preparations','devotionals'].includes(name)) store.createIndex('updatedAt','updatedAt');
           if(name==='revisions'){
             store.createIndex('entityKey','entityKey');
             store.createIndex('createdAt','createdAt');
@@ -56,11 +56,11 @@ export const db={
   },
   async restoreUserData(collections,settings={}){
     const database=await openDB();
-    const stores=['sermons','studies','devotionals','translations','settings','revisions'];
+    const stores=['sermons','studies','preparations','devotionals','translations','settings','revisions'];
     const tx=database.transaction(stores,'readwrite');
     const done=txDone(tx);
     for(const name of stores) tx.objectStore(name).clear();
-    for(const name of ['sermons','studies','devotionals','translations']){
+    for(const name of ['sermons','studies','preparations','devotionals','translations']){
       const store=tx.objectStore(name);
       for(const value of collections[name]||[]) store.put(value);
     }
