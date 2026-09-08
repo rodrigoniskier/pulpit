@@ -1,4 +1,4 @@
-export const APP_VERSION = '2.2.0';
+export const APP_VERSION = '2.2.1';
 
 export function uid(prefix='id') {
   const id = globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
