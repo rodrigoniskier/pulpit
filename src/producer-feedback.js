@@ -251,6 +251,56 @@ function setupPreparation(){
   form?.elements.namedItem('genre')?.addEventListener('change',()=>{updateGenreFields();schedulePreparationSave();});
 }
 
+function localDateValue(date=new Date()){
+  return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+function setupAgendaScheduling(){
+  const view=$('#view-agenda');
+  if(!view||$('#agenda-schedule-panel'))return;
+  const panel=document.createElement('section');
+  panel.id='agenda-schedule-panel';
+  panel.className='panel';
+  panel.innerHTML=`
+    <div class="panel-header">
+      <div><h2>Agendar pregação</h2><p class="view-description">O agendamento cria um sermão em Rascunho na Biblioteca. Alterar ou remover a data no sermão atualiza automaticamente esta Agenda.</p></div>
+    </div>
+    <form id="agenda-schedule-form" class="editor-form" autocomplete="off">
+      <div class="form-grid cols-2">
+        <label>Título do sermão<input name="title" maxlength="180" required placeholder="Ex.: A graça que transforma"></label>
+        <label>Data da pregação<input name="preachingDate" type="date" required></label>
+        <label>Texto bíblico<div class="passage-field"><input id="agenda-passage" class="passage-picker" name="passage" maxlength="160" readonly placeholder="Clique para selecionar"><button type="button" class="secondary passage-button" data-passage-target="#agenda-passage">Selecionar</button></div></label>
+        <label>Local<input name="location" maxlength="180" placeholder="Ex.: Igreja Presbiteriana Central"></label>
+      </div>
+      <div class="toolbar-actions"><button type="submit" class="primary">Agendar e criar sermão</button></div>
+    </form>`;
+  const label=$('#calendar-label');
+  if(label)view.insertBefore(panel,label);else view.append(panel);
+  const form=$('#agenda-schedule-form');
+  form.elements.namedItem('preachingDate').value=localDateValue();
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const data=Object.fromEntries(new FormData(form));
+    const sermon=sanitizeEntity('sermons',{
+      ...newSermon(),
+      title:String(data.title||'').trim(),
+      passage:String(data.passage||'').trim(),
+      preachingDate:String(data.preachingDate||''),
+      location:String(data.location||'').trim(),
+      status:'Rascunho',
+      updatedAt:nowISO()
+    });
+    if(!sermon.title||!sermon.preachingDate){toast('Informe o título e a data da pregação.');return;}
+    try{
+      await db.put('sermons',sermon);
+      const autoMirror=(await db.get('settings','autoMirror'))?.value;
+      if(autoMirror)await mirror.write('sermons',sermon).catch(console.error);
+      toast('Pregação agendada e sermão criado na Biblioteca.');
+      location.hash='sermons';
+      location.reload();
+    }catch(error){console.error(error);toast(error.message||'Não foi possível agendar a pregação.');}
+  });
+}
+
 async function updatePreparationDashboard(){
   const grid=$('#stats-grid'); if(!grid)return;
   const existing=grid.querySelector('[data-prep-stat]'); if(existing)existing.remove();
@@ -291,7 +341,7 @@ function watchDashboard(){
 async function init(){
   await openDB();
   new BibleSelector().init();
-  setupSidebar();setupPreparation();setupMarking();setupSermonDelivery();setupPreparationSearch();watchDashboard();
+  setupSidebar();setupPreparation();setupAgendaScheduling();setupMarking();setupSermonDelivery();setupPreparationSearch();watchDashboard();
   await renderPreparations();
   setTimeout(updatePreparationDashboard,150);
   const hash=location.hash.slice(1);
